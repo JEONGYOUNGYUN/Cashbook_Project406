@@ -62,13 +62,13 @@
 <!-- 	<websocket:sockjs websocket-enabled="true"/> -->
 <!-- 	</websocket:handlers> -->
 	
-<!-- 	<beans:bean id="handlerChat" class="kr.or.ddit.handler.HandlerChat"/> -->
+<!-- 	<beans:bean id="handlerChat" class="com.project.cashbook.handler.HandlerChat"/> -->
    
    <!-- WebSocket 설정 끝 -->
    
-   <!-- kr.or.ddit 패키지 컴포넌트 스캔 대상으로 함 -->
-<!--    <context:component-scan base-package="kr.or.ddit" /> -->
-<!--    <context:component-scan base-package="spring.service" /> -->
+   <!-- com.project.cashbook 패키지 컴포넌트 스캔 대상으로 함 -->
+   <context:component-scan base-package="com.project.cashbook" />
+   <context:component-scan base-package="spring.service" />
    <!-- 스프링 시큐리티 애너테이션을 활성화 
    - pre-post-annotations="enabled" => @PreAuthorize, @PostAuthorize 활성화
    - secured-annotations="enabled" => @Secured를 활성화
