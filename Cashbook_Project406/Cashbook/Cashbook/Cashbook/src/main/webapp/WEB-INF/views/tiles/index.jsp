@@ -9,7 +9,7 @@
 <title>CashBook</title>
 
 <!-- App favicon -->
-<link rel="shortcut icon" href="assets/images/favicon.ico">
+<link rel="shortcut icon" href="/resources/dist/assets/images/favicon.ico">
 
 <!-- Bootstrap Css -->
 <link href="/resources/dist/assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
