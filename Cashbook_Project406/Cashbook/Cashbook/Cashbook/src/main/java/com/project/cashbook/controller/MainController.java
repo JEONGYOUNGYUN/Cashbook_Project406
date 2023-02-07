@@ -11,9 +11,4 @@ public class MainController {
 	public String main() {
 		return "home";
 	}
-	
-	@GetMapping("/list/CashBookList")
-	public String mainTest() {
-		return "list/CashBookList";
-	}
 }
