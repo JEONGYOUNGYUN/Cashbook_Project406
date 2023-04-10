@@ -43,6 +43,8 @@
 	<script src="/resources/dist/assets/libs/metismenujs/metismenujs.min.js"></script>
 	<script src="/resources/dist/assets/libs/simplebar/simplebar.min.js"></script>
 	<script src="/resources/dist/assets/libs/eva-icons/eva.min.js"></script>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 	<!-- apexcharts -->
 	<script src="/resources/dist/assets/libs/apexcharts/apexcharts.min.js"></script>

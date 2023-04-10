@@ -1,20 +1,26 @@
 package com.project.cashbook.vo;
 
+import lombok.Data;
+
 //익명게시판
+@Data
 public class CashbookVO {
 
-	private String csboCd;			//가계부코드
-	private String csboDt;			//가계부등록일
-	private int csboAmt;			//가계부금액
-	private String csboCate;		//가계부분류
-	private int csboAst;			//가계부자산
-	private String csboCnt;			//가계부내용
-	private String csboCategory;	//가계부카테고리
-	private String userCd;			//사용자코드
+	private String csboCd; // 가계부 코드
+	private String csboDt; // 가계부 등록일
+	private String csboAmt; // 가계부 금액
+	private String csboNm; // 가계부분류
+	private String csboAst; // 가계부자산
+	private String csboCnt; // 가계부 내용
+	private String csboCate; // 가계부카테고리
+	private String userCd; // 사용자 코드
+
+	private String cbctNm; // 가계부분류명
+	private String cateNm; // 카데코리명
+	private String userNik; // 사용자 닉네임
 	
-	private String cbctNm;			//가계부분류명
-	private String cateNm; 			//카데코리명
-	private String userNik; 		//사용자 닉네임
+	private String astNm; // 요약_자산이름
+	private String cateTotal; //요약_자산별 합계
 
 	public String getCsboCd() {
 		return csboCd;
@@ -32,27 +38,27 @@ public class CashbookVO {
 		this.csboDt = csboDt;
 	}
 
-	public int getCsboAmt() {
+	public String getCsboAmt() {
 		return csboAmt;
 	}
 
-	public void setCsboAmt(int csboAmt) {
+	public void setCsboAmt(String csboAmt) {
 		this.csboAmt = csboAmt;
 	}
 
-	public String getCsboCate() {
-		return csboCate;
+	public String getCsboNm() {
+		return csboNm;
 	}
 
-	public void setCsboCate(String csboCate) {
-		this.csboCate = csboCate;
+	public void setCsboNm(String csboNm) {
+		this.csboNm = csboNm;
 	}
 
-	public int getCsboAst() {
+	public String getCsboAst() {
 		return csboAst;
 	}
 
-	public void setCsboAst(int csboAst) {
+	public void setCsboAst(String csboAst) {
 		this.csboAst = csboAst;
 	}
 
@@ -64,12 +70,12 @@ public class CashbookVO {
 		this.csboCnt = csboCnt;
 	}
 
-	public String getCsboCategory() {
-		return csboCategory;
+	public String getCsboCate() {
+		return csboCate;
 	}
 
-	public void setCsboCategory(String csboCategory) {
-		this.csboCategory = csboCategory;
+	public void setCsboCate(String csboCate) {
+		this.csboCate = csboCate;
 	}
 
 	public String getUserCd() {
@@ -78,6 +84,14 @@ public class CashbookVO {
 
 	public void setUserCd(String userCd) {
 		this.userCd = userCd;
+	}
+
+	public String getCbctNm() {
+		return cbctNm;
+	}
+
+	public void setCbctNm(String cbctNm) {
+		this.cbctNm = cbctNm;
 	}
 
 	public String getCateNm() {
@@ -96,19 +110,11 @@ public class CashbookVO {
 		this.userNik = userNik;
 	}
 
-	public String getCbctNm() {
-		return cbctNm;
-	}
-
-	public void setCbctNm(String cbctNm) {
-		this.cbctNm = cbctNm;
-	}
-
 	@Override
 	public String toString() {
-		return "CashbookVO [csboCd=" + csboCd + ", csboDt=" + csboDt + ", csboAmt=" + csboAmt + ", csboCate=" + csboCate
-				+ ", csboAst=" + csboAst + ", csboCnt=" + csboCnt + ", csboCategory=" + csboCategory + ", userCd="
-				+ userCd + ", cbctNm=" + cbctNm + ", cateNm=" + cateNm + ", userNik=" + userNik + "]";
+		return "CashbookVO [csboCd=" + csboCd + ", csboDt=" + csboDt + ", csboAmt=" + csboAmt + ", csboNm=" + csboNm
+				+ ", csboAst=" + csboAst + ", csboCnt=" + csboCnt + ", csboCate=" + csboCate + ", userCd=" + userCd
+				+ ", cbctNm=" + cbctNm + ", cateNm=" + cateNm + ", userNik=" + userNik + "]";
 	}
 
 }

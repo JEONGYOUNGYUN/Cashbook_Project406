@@ -6,6 +6,14 @@ public class CashbookCateGoryVO {
 	private String cbctNo;		//분류코드
 	private String userCd;		//사용자코드
 	private String cbctNm;		//분류명
+	private String cbctCate;
+	
+	public String getCbctCate() {
+		return cbctCate;
+	}
+	public void setCbctCate(String cbctCate) {
+		this.cbctCate = cbctCate;
+	}
 	public String getCbctNo() {
 		return cbctNo;
 	}
@@ -24,11 +32,12 @@ public class CashbookCateGoryVO {
 	public void setCbctNm(String cbctNm) {
 		this.cbctNm = cbctNm;
 	}
+	
 	@Override
 	public String toString() {
-		return "CashbookCateGoryVO [cbctNo=" + cbctNo + ", userCd=" + userCd + ", cbctNm=" + cbctNm + "]";
+		return "CashbookCateGoryVO [cbctNo=" + cbctNo + ", userCd=" + userCd + ", cbctNm=" + cbctNm + ", cbctCate="
+				+ cbctCate + "]";
 	}
-	
 	
 	
 }

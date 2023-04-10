@@ -1,8 +1,19 @@
+<%@page import="com.project.cashbook.vo.UserDataVO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"%>
 <%@ page import="org.springframework.security.core.Authentication"%>
 <%@ page import="org.springframework.security.core.context.SecurityContextHolder"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+
+<% //스크립틀릿
+
+UserDataVO vo = new UserDataVO(); 
+
+if(request.getSession().getAttribute("loginUser") != null){
+	vo = (UserDataVO)request.getSession().getAttribute("loginUser");
+}
+
+%>
 
 <!-- header start -->
 <header id="page-topbar" class="isvertical-topbar">
@@ -282,35 +293,37 @@
 					aria-haspopup="true" aria-expanded="false">
 					<img class="rounded-circle header-profile-user"
 						src="/resources/dist/assets/images/users/avatar-1.jpg" alt="Header Avatar">
+						
+						
 				</button>
 				<div class="dropdown-menu dropdown-menu-end pt-0">
 					<div class="p-3 border-bottom">
-						<h6 class="mb-0">Jennifer Bennett</h6>
-						<p class="mb-0 font-size-11 text-muted">jennifer.bennett@email.com</p>
+						<h6 class="mb-0"><%= vo.getUserNik() %> 님</h6>
+						<p class="mb-0 font-size-11 text-muted"><%= vo.getUserId() %></p>
 					</div>
 					<a class="dropdown-item" href="contacts-profile.html"><i
 						class="mdi mdi-account-circle text-muted font-size-16 align-middle me-1"></i>
-						<span class="align-middle">Profile</span></a> <a class="dropdown-item"
+						<span class="align-middle">프로필</span></a> <a class="dropdown-item"
 						href="apps-chat.html"><i
 						class="mdi mdi-message-text-outline text-muted font-size-16 align-middle me-1"></i>
-						<span class="align-middle">Messages</span></a> <a
+						<span class="align-middle">메시지</span></a> <a
 						class="dropdown-item" href="pages-faqs.html"><i
 						class="mdi mdi-lifebuoy text-muted font-size-16 align-middle me-1"></i>
-						<span class="align-middle">Help</span></a>
+						<span class="align-middle">도움말</span></a>
 					<div class="dropdown-divider"></div>
 					<a class="dropdown-item" href="#"><i
 						class="mdi mdi-wallet text-muted font-size-16 align-middle me-1"></i>
-						<span class="align-middle">Balance : <b>$6951.02</b></span></a> <a
+						<span class="align-middle">잔액 : <b>$6951.02</b></span></a> <a
 						class="dropdown-item d-flex align-items-center" href="#"><i
 						class="mdi mdi-cog-outline text-muted font-size-16 align-middle me-1"></i>
-						<span class="align-middle">Settings</span><span
+						<span class="align-middle">설정</span><span
 						class="badge badge-soft-success ms-auto">New</span></a> <a
 						class="dropdown-item" href="auth-lock-screen.html"><i
 						class="mdi mdi-lock text-muted font-size-16 align-middle me-1"></i>
-						<span class="align-middle">Lock screen</span></a> <a
+						<span class="align-middle">잠금</span></a> <a
 						class="dropdown-item" href="auth-logout.html"><i
 						class="mdi mdi-logout text-muted font-size-16 align-middle me-1"></i>
-						<span class="align-middle">Logout</span></a>
+						<span class="align-middle">로그아웃</span></a>
 				</div>
 			</div>
 		</div>

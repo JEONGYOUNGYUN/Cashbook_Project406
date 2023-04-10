@@ -4,55 +4,201 @@
 <mapper namespace="com.project.cashbook.mapper.CashBookListMapper">
 	
 	<!-- 가계부 일일 목록 조회 -->
-	<select id="selectCashBookList" resultType="CashbookVO">
-		SELECT A.CSBO_CD 													/*가계부코드*/
-			, A.CSBO_DT 													/*가계부등록일*/
-			, A.CSBO_AMT 													/*가계부금액*/
-			, B.CBCT_NM AS CSBO_NM 											/*가계부분류_EX.식비, 교통...*/
-			, C.CATE_NM AS CSBO_AST 										/*가계부자산_EX.현금, 카드, 은행...*/
-			, A.CSBO_CNT													/*가계부내용*/
-			, C.CATE_NM AS CSBO_CATE 										/*가계부카테고리_수입, 지출, 이체...*/
-			, D.USER_NIK 													/*사용자닉네임*/
-			FROM CASHBOOK A, CASHBOOKCATEGORY B, CATEGORY C, USER_DATA D
-			WHERE A.CSBO_NM = B.CBCT_NO
-			AND A.CSBO_AST = C.CATE_CD
-			AND A.CSBO_CATE = C.CATE_CD
-			AND A.USER_CD = D.USER_CD
+	<select id="selectCashBookList" parameterType="String" resultType="CashbookVO">
+		WITH AST AS (
+		    SELECT
+		        CATE_CD,
+		        CATE_NM,
+		        CATE_CATE
+		    FROM
+		        CATEGORY
+		    WHERE
+		        CATE_CATE = '자산'
+		),CATE AS (
+		    SELECT
+		        CATE_CD,
+		        CATE_NM,
+		        CATE_CATE
+		    FROM
+		        CATEGORY
+		    WHERE
+		        CATE_CATE = '카테고리'
+		) SELECT
+		    A.CSBO_CD,
+		    TO_CHAR(A.CSBO_DT,'YYYY-MM-DD') AS CSBO_DT,
+		    A.CSBO_AMT,
+		    B.CBCT_NM AS CSBO_NM,
+		    AST.CATE_NM AS CSBO_AST,
+		    A.CSBO_CNT,
+		    CATE.CATE_NM AS CSBO_CATE,
+		    C.USER_NIK
+		  FROM
+		    CASHBOOK A,
+		    CASHBOOKCATEGORY B,
+		    AST,
+		    CATE,
+		    USER_DATA C
+		  WHERE
+		    A.USER_CD = C.USER_CD
+		    AND A.USER_CD = #{userCd}
+		    AND A.CSBO_DT = SYSDATE
+		    AND A.CSBO_NM = B.CBCT_NO
+		    AND A.CSBO_AST = AST.CATE_CD
+		    AND A.CSBO_CATE = CATE.CATE_CD
+		    AND B.CBCT_CATE = CATE.CATE_CD
+		    AND B.USER_CD = 'UD00000'
+		    OR  B.USER_CD = #{userCd}
 	</select>
 	
 	<!-- 가계부 일일 목록 중 수입 합계 조회 -->
-	<select id="selectTotalIncome" resultType="int">
-		SELECT B.CATE_NM 								/*가계부 카테고리*/
-		, SUM(A.CSBO_AMT) AS CATE_TOTAL 				/*가계부 합계*/
+	<select id="selectTotalIncome" parameterType="String" resultType="int">
+		SELECT SUM(A.CSBO_AMT) AS CATE_TOTAL 				/*가계부 합계*/
 		FROM CASHBOOK A, CATEGORY B
 		WHERE A.CSBO_CATE = B.CATE_CD
 		AND B.CATE_NM = '수입'
+		AND A.CSBO_DT = SYSDATE
+		AND A.USER_CD = #{userCd}
 		GROUP BY B.CATE_NM
 	</select>
 	
 	<!-- 가계부 일일 목록 중 지출 합계 조회 -->
-	<select id="selectTotalExpense" resultType="int">
-		SELECT B.CATE_NM 								/*가계부 카테고리*/
-		, SUM(A.CSBO_AMT) AS CATE_TOTAL 				/*가계부 합계*/
+	<select id="selectTotalExpense" parameterType="String" resultType="int">
+		SELECT SUM(A.CSBO_AMT) AS CATE_TOTAL 				/*가계부 합계*/
 		FROM CASHBOOK A, CATEGORY B
 		WHERE A.CSBO_CATE = B.CATE_CD
 		AND B.CATE_NM = '지출'
+		AND A.CSBO_DT = SYSDATE
+		AND A.USER_CD = #{userCd}
+		GROUP BY B.CATE_NM
+	</select>
+	
+	<!-- 사용자별 분류 카테고리 가져오기 -->
+	<select id="selectDetailGroup" resultType="CashbookCateGoryVO" parameterType="String">
+		SELECT *
+		  FROM CASHBOOKCATEGORY
+		 WHERE USER_CD IN ('UD00000') OR USER_CD IN (#{userCd})
+	</select>
+	
+	<!-- 분류코드 가져오기 -->
+	<select id="GetDetailGroupCd" resultType="String" parameterType="hashmap">
+		SELECT CBCT_NO
+		  FROM CASHBOOKCATEGORY
+		 WHERE USER_CD = #{userCd} OR USER_CD = 'UD00000'
+		   AND CBCT_NM = #{DetailGroup}
+	</select>
+	
+	<!-- 가계부 수정 -->
+	<update id="CashbookUpdate" parameterType="CashbookVO">
+		UPDATE CASHBOOK
+		   SET  CSBO_DT = TO_DATE(#{csboDt},'yyyy/MM/dd'), CSBO_AMT = TO_NUMBER(#{csboAmt}), CSBO_NM = #{csboNm}, CSBO_AST = #{csboAst}, 
+		        CSBO_CNT = #{csboCnt}, CSBO_CATE = #{csboCate}
+		WHERE USER_CD= #{userCd}
+		  AND CSBO_CD = #{csboCd}
+	</update>
+	
+	<!-- 가계부 추가 -->
+	<insert id="CashbookSave" parameterType="CashbookVO">
+		INSERT INTO CASHBOOK(CSBO_DT, CSBO_AMT, CSBO_NM, CSBO_AST, CSBO_CNT, CSBO_CATE, USER_CD, CSBO_CD)
+		VALUES (TO_DATE(#{csboDt},'yyyy/MM/dd'), TO_NUMBER(#{csboAmt}), #{csboNm}, #{csboAst}, 
+					#{csboCnt}, #{csboCate}, #{userCd}, (SELECT 'CB'||LPAD(TO_CHAR(SUBSTR(NVL(MAX(CSBO_CD),0),9)+1),8,'0') FROM CASHBOOK))
+	</insert>
+	
+	<!-- 가계부 삭제 -->
+	<delete id="CashbookDelete" parameterType="CashbookVO">
+		DELETE 
+		  FROM CASHBOOK
+		 WHERE USER_CD = #{userCd}
+		   AND CSBO_CD = #{csboCd}
+	</delete>
+	
+	<!-- 가계부 자산별 요약  조회 쿼리 -->
+	<select id="selectSummary" parameterType="CashbookVO" resultType="CashbookVO">
+		WITH ASTOTAL AS(
+			SELECT A.CSBO_AST, B.CATE_NM, SUM(A.CSBO_AMT) AS AST_TOTAL /*자산별 합계*/
+			FROM CASHBOOK A, CATEGORY B
+			WHERE A.CSBO_AST = B.CATE_CD
+			AND A.USER_CD = #{userCd}
+			AND TO_CHAR(A.CSBO_DT,'YYYY-MM-DD') = #{csboDt}
+			GROUP BY B.CATE_NM, A.CSBO_AST
+		)
+		SELECT ASTOTAL.CATE_NM AS AST_NM,
+		B.CATE_NM AS CATE_NM,
+		SUM(A.CSBO_AMT) AS CATE_TOTAL /*카테고리별 합계*/
+		FROM CASHBOOK A, CATEGORY B, ASTOTAL
+		WHERE A.CSBO_CATE = B.CATE_CD
+		AND A.CSBO_AST = ASTOTAL.CSBO_AST
+		AND A.USER_CD = #{userCd}
+		AND TO_CHAR(A.CSBO_DT,'YYYY-MM-DD') = #{csboDt}
+		GROUP BY ASTOTAL.CATE_NM, B.CATE_NM
+		ORDER BY CATE_NM
+	</select>
+	
+	<!-- 날짜로 검색_일일 조회 -->
+	<select id="selectbyDate" parameterType="CashbookVO" resultType="CashbookVO">
+		WITH AST AS (
+		    SELECT
+		        CATE_CD,
+		        CATE_NM,
+		        CATE_CATE
+		    FROM
+		        CATEGORY
+		    WHERE
+		        CATE_CATE = '자산'
+		),CATE AS (
+		    SELECT
+		        CATE_CD,
+		        CATE_NM,
+		        CATE_CATE
+		    FROM
+		        CATEGORY
+		    WHERE
+		        CATE_CATE = '카테고리'
+		) SELECT
+		    A.CSBO_CD,
+		    TO_CHAR(A.CSBO_DT,'YYYY-MM-DD') AS CSBO_DT,
+		    A.CSBO_AMT,
+		    B.CBCT_NM AS CSBO_NM,
+		    AST.CATE_NM AS CSBO_AST,
+		    A.CSBO_CNT,
+		    CATE.CATE_NM AS CSBO_CATE,
+		    C.USER_NIK
+		  FROM
+		    CASHBOOK A,
+		    CASHBOOKCATEGORY B,
+		    AST,
+		    CATE,
+		    USER_DATA C
+		  WHERE
+		    A.USER_CD = C.USER_CD
+		    AND   A.USER_CD = #{userCd}
+		    AND   TO_CHAR(A.CSBO_DT,'YYYY-MM-DD') = #{csboDt}
+		    AND   A.CSBO_NM = B.CBCT_NO
+		    AND   A.CSBO_AST = AST.CATE_CD
+		    AND   A.CSBO_CATE = CATE.CATE_CD
+		    AND   B.CBCT_CATE = CATE.CATE_CD
+		    AND   B.USER_CD = 'UD00000'
+		    OR    B.USER_CD = #{userCd}
+	</select>
+	
+	<!-- 가계부 일일 목록 중 수입 합계 조회 -->
+	<select id="selectTotalIncomebyDate" parameterType="CashbookVO" resultType="int">
+		SELECT SUM(A.CSBO_AMT) AS CATE_TOTAL 				/*가계부 합계*/
+		FROM CASHBOOK A, CATEGORY B
+		WHERE A.CSBO_CATE = B.CATE_CD
+		AND B.CATE_NM = '수입'
+		AND A.USER_CD = #{userCd}
+		AND TO_CHAR(A.CSBO_DT,'YYYY-MM-DD') = #{csboDt}
+		GROUP BY B.CATE_NM
+	</select>
+	
+	<!-- 가계부 일일 목록 중 지출 합계 조회 -->
+	<select id="selectTotalExpensebyDate" parameterType="CashbookVO" resultType="int">
+		SELECT SUM(A.CSBO_AMT) AS CATE_TOTAL 				/*가계부 합계*/
+		FROM CASHBOOK A, CATEGORY B
+		WHERE A.CSBO_CATE = B.CATE_CD
+		AND B.CATE_NM = '지출'
+		AND A.USER_CD = #{userCd}
+		AND TO_CHAR(A.CSBO_DT,'YYYY-MM-DD') = #{csboDt}
 		GROUP BY B.CATE_NM
 	</select>
 </mapper>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

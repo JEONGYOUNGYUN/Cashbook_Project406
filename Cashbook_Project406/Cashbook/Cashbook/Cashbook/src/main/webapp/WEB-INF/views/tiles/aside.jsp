@@ -35,13 +35,10 @@
 
 				<li class="menu-title" data-key="t-applications">Menu</li>
 
-				<li><a href="apps-chat.html"> <i class="icon nav-icon"
-						data-eva="list"></i> <span class="menu-item" data-key="t-chat">내역</span>
-				</a></li>
-
-				<li><a href="apps-calendar.html"> <i class="icon nav-icon"
-						data-eva="calendar-outline"></i> <span class="menu-item"
-						data-key="t-calendar">달력</span>
+				<li>
+					<a href="/list/CashBookList">
+					<i class="icon nav-icon" data-eva="list"></i>
+					<span class="menu-item" data-key="t-chat">내역</span>
 				</a></li>
 
 				<li><a href="apps-file-manager.html"> <i
